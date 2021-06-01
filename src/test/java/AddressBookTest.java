@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBookTest {
     @Test
@@ -25,10 +26,16 @@ public class AddressBookTest {
     @Test
     public void givenDateRangeWhenRetrievedShouldMatchContactCount() throws DatabaseException {
         AddressBookService addressBookService = new AddressBookService();
-        List<ContactDetail> contactList = addressBookService.readContactDetail();
         LocalDate startDate = LocalDate.of(2020, 02, 02);
         LocalDate endDate = LocalDate.now();
         List<ContactDetail> contactListData = addressBookService.readContactDataForGivenDateRange(startDate, endDate);
-        Assertions.assertEquals(3, contactList.size());
+        Assertions.assertEquals(3, contactListData.size());
+    }
+
+    @Test
+    public void givenContactRetrieveNumberOfContactByCity() throws DatabaseException {
+        AddressBookService addressBookService = new AddressBookService();
+        Map<String, Integer> contactByCityList = addressBookService.readContactByCity();
+        Assertions.assertEquals(true, contactByCityList.get("pune").equals(2));
     }
 }

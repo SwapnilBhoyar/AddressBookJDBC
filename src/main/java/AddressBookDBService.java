@@ -1,7 +1,9 @@
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBookDBService {
 
@@ -103,5 +105,22 @@ public class AddressBookDBService {
     public List<ContactDetail> getContactForGivenDateRange(LocalDate startDate, LocalDate endDate) {
         String sql = String.format("SELECT * FROM People p INNER JOIN Address a ON p.id = a.id INNER JOIN address_book ab ON ab.id = a.id WHERE date_added BETWEEN '%s' AND '%s';", Date.valueOf(startDate), Date.valueOf(endDate));
         return this.getContactData(sql);
+    }
+
+    public Map<String, Integer> getContactByCity() throws DatabaseException {
+        Map<String, Integer> contactByCityMap = new HashMap<>();
+        String sql = "SELECT city, COUNT(first_name) FROM People p INNER JOIN Address a ON p.id = a.id INNER JOIN address_book ab ON ab.id = a.id GROUP BY city;";
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                String city = resultSet.getString("city");
+                int count = resultSet.getInt("COUNT(first_name)");
+                contactByCityMap.put(city, count);
+            }
+        } catch (SQLException | DatabaseException e) {
+            throw new DatabaseException("Data not found");
+        }
+        return contactByCityMap;
     }
 }

@@ -2,10 +2,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBookService {
 
     private List<ContactDetail> contactList = new ArrayList<>();
+    private Map<String, Integer> contactByCityList;
     private AddressBookDBService addressBookDBService;
 
     AddressBookService () {
@@ -50,5 +52,10 @@ public class AddressBookService {
     public List<ContactDetail> readContactDataForGivenDateRange(LocalDate startDate, LocalDate endDate) {
         List<ContactDetail> contactListData = addressBookDBService.getContactForGivenDateRange(startDate, endDate);
         return contactListData;
+    }
+
+    public Map<String, Integer> readContactByCity() throws DatabaseException {
+        Map<String, Integer> contactByCityListList = addressBookDBService.getContactByCity();
+        return contactByCityListList;
     }
 }
