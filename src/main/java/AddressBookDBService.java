@@ -104,13 +104,4 @@ public class AddressBookDBService {
         String sql = String.format("SELECT * FROM People p INNER JOIN Address a ON p.id = a.id INNER JOIN address_book ab ON ab.id = a.id WHERE date_added BETWEEN '%s' AND '%s';", Date.valueOf(startDate), Date.valueOf(endDate));
         return this.getContactData(sql);
     }
-
-    /*private List<ContactDetail> getContactDetailUsingSqlQuery(String sql) {
-        List<ContactDetail> contactList = new ArrayList<>();
-        try (Connection connection = this.getConnection()){
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet resultSet = preparedStatement.executeQuery(sql);
-
-        }
-    }*/
 }
