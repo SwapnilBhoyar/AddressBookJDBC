@@ -38,4 +38,9 @@ public class AddressBookTest {
         Map<String, Integer> contactByCityList = addressBookService.readContactByCity();
         Assertions.assertEquals(true, contactByCityList.get("pune").equals(2));
     }
+
+    @Test
+    public void givenNewContactShouldAddToAddressBook() {
+
+    }
 }
