@@ -21,4 +21,14 @@ public class AddressBookTest {
         boolean result = addressBookService.checkContactDataSync("swapnil", "bhoyar");
         Assertions.assertEquals(true, result);
     }
+
+    @Test
+    public void givenDateRangeWhenRetrievedShouldMatchContactCount() throws DatabaseException {
+        AddressBookService addressBookService = new AddressBookService();
+        List<ContactDetail> contactList = addressBookService.readContactDetail();
+        LocalDate startDate = LocalDate.of(2020, 02, 02);
+        LocalDate endDate = LocalDate.now();
+        List<ContactDetail> contactListData = addressBookService.readContactDataForGivenDateRange(startDate, endDate);
+        Assertions.assertEquals(3, contactList.size());
+    }
 }

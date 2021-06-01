@@ -46,4 +46,9 @@ public class AddressBookService {
         List<ContactDetail> contactList = addressBookDBService.getContactData(firstname, lastname);
         return contactList.get(0).equals(getContact(firstname, lastname));
     }
+
+    public List<ContactDetail> readContactDataForGivenDateRange(LocalDate startDate, LocalDate endDate) {
+        List<ContactDetail> contactListData = addressBookDBService.getContactForGivenDateRange(startDate, endDate);
+        return contactListData;
+    }
 }
