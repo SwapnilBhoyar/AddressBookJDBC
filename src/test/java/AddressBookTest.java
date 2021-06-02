@@ -40,7 +40,11 @@ public class AddressBookTest {
     }
 
     @Test
-    public void givenNewContactShouldAddToAddressBook() {
-
+    public void givenNewContactShouldAddToAddressBook() throws DatabaseException {
+        AddressBookService addressBookService = new AddressBookService();
+        LocalDate date = LocalDate.of(2020, 8, 8);
+        addressBookService.addContact("akshay", "khilari", "kondhwa", "pune", "maharashtra", 789654, "2587413690", "akshay@gmail.com", date);
+        boolean result = addressBookService.checkContactDataSync("akshay", "khilari");
+        Assertions.assertTrue(result);
     }
 }

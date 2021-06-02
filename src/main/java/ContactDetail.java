@@ -1,9 +1,12 @@
+import java.time.LocalDate;
+
 public class ContactDetail {
     public String firstname, lastname;
     public String address, city, state;
     public int zip;
     public String phoneNumber;
     public String email;
+    public LocalDate date;
 
     public ContactDetail(String firstname, String lastname, String address, String city, String state, int zip, String phoneNumber, String email) {
         this.firstname = firstname;
@@ -14,6 +17,18 @@ public class ContactDetail {
         this.zip = zip;
         this.phoneNumber = phoneNumber;
         this.email = email;
+    }
+
+    public ContactDetail(String firstname, String lastname, String address, String city, String state, int zip, String phoneNumber, String email, LocalDate date) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.date = date;
     }
 
     public ContactDetail() {}

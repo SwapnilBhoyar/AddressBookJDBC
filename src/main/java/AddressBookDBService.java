@@ -123,4 +123,39 @@ public class AddressBookDBService {
         }
         return contactByCityMap;
     }
+
+    public ContactDetail addContact(String firstname, String lastname, String address, String city, String state, int zip, String phonenumber, String email, LocalDate date) throws DatabaseException {
+        Connection connection = this.getConnection();
+        try {
+            connection.setAutoCommit(false);
+        }catch (SQLException e) {e.printStackTrace();}
+        try {
+            Statement statement = connection.createStatement();
+            String sql = String.format("INSERT INTO People (first_name, last_name, phone_number, email, date_added) VALUES ('%s', '%s', '%s', '%s', '%s')",firstname, lastname, phonenumber, email, date);
+            String sql1 = String.format("INSERT INTO Address (address, city, state, zip) VALUES ('%s', '%s', '%s', '%s')", address, city, state, zip);
+            statement.executeUpdate(sql);
+            statement.executeUpdate(sql1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        try {
+            connection.commit();
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return new ContactDetail(firstname, lastname, address, city, state, zip, phonenumber, email, date);
+    }
 }

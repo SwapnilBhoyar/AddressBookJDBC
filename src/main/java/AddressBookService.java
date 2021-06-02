@@ -6,6 +6,10 @@ import java.util.Map;
 
 public class AddressBookService {
 
+    public enum IOService {
+        DB_IO
+    }
+
     private List<ContactDetail> contactList = new ArrayList<>();
     private Map<String, Integer> contactByCityList;
     private AddressBookDBService addressBookDBService;
@@ -57,5 +61,9 @@ public class AddressBookService {
     public Map<String, Integer> readContactByCity() throws DatabaseException {
         Map<String, Integer> contactByCityListList = addressBookDBService.getContactByCity();
         return contactByCityListList;
+    }
+
+    public void addContact(String firstname, String lastname, String address, String city, String state, int zip, String phonenumber, String email, LocalDate date) throws DatabaseException {
+        contactList.add(addressBookDBService.addContact(firstname, lastname, address, city, state, zip, phonenumber, email, date));
     }
 }
