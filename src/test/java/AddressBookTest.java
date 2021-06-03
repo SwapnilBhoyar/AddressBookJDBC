@@ -1,50 +1,63 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class AddressBookTest {
+    static AddressBookService addressBookService;
+
     @Test
-    public void givenContactDataWhenRetrievedShouldMatchContactCount() throws DatabaseException {
+    public void givenContactDataWhenRetrievedShouldMatchContactCount() throws ContactDetailException {
         AddressBookService addressBookService = new AddressBookService();
-        List<ContactDetail> contactList = addressBookService.readContactDetail();
-        Assertions.assertEquals(3, contactList.size());
+        List<ContactDetail> contactDetailList = addressBookService.readAddressBookData(AddressBookService.IOService.DB_IO);
+        Assertions.assertEquals(11, contactDetailList.size());
     }
 
     @Test
-    public void givenNewDataForContactWhenUpdatedShouldBeInSync() throws DatabaseException, SQLException {
+    public void givenNewDataForContactWhenUpdatedShouldBeInSync() throws ContactDetailException {
         AddressBookService addressBookService = new AddressBookService();
-        List<ContactDetail> contactDetailList = addressBookService.readContactDBData();
-        addressBookService.updateContactData("swapnil", "bhoyar", "9087654321");
-        boolean result = addressBookService.checkContactDataSync("swapnil", "bhoyar");
-        Assertions.assertEquals(true, result);
-    }
-
-    @Test
-    public void givenDateRangeWhenRetrievedShouldMatchContactCount() throws DatabaseException {
-        AddressBookService addressBookService = new AddressBookService();
-        LocalDate startDate = LocalDate.of(2020, 02, 02);
-        LocalDate endDate = LocalDate.now();
-        List<ContactDetail> contactListData = addressBookService.readContactDataForGivenDateRange(startDate, endDate);
-        Assertions.assertEquals(3, contactListData.size());
-    }
-
-    @Test
-    public void givenContactRetrieveNumberOfContactByCity() throws DatabaseException {
-        AddressBookService addressBookService = new AddressBookService();
-        Map<String, Integer> contactByCityList = addressBookService.readContactByCity();
-        Assertions.assertEquals(true, contactByCityList.get("pune").equals(2));
-    }
-
-    @Test
-    public void givenNewContactShouldAddToAddressBook() throws DatabaseException {
-        AddressBookService addressBookService = new AddressBookService();
-        LocalDate date = LocalDate.of(2020, 8, 8);
-        addressBookService.addContact("akshay", "khilari", "kondhwa", "pune", "maharashtra", 789654, "2587413690", "akshay@gmail.com", date);
-        boolean result = addressBookService.checkContactDataSync("akshay", "khilari");
+        List<ContactDetail> contactDetailList = addressBookService.readAddressBookData(AddressBookService.IOService.DB_IO);
+        addressBookService.updateRecord("swapnil", "katraj");
+        boolean result = addressBookService.checkUpdatedRecordSyncWithDatabase("swapnil");
         Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void givenDateRangeWhenRetrievedShouldMatchContactCount() throws ContactDetailException {
+        AddressBookService addressBookService = new AddressBookService();
+        List<ContactDetail> contactDetailList = addressBookService.readAddressBookData(AddressBookService.IOService.DB_IO, "2020-01-01", "2020-12-12");
+        Assertions.assertEquals(4, contactDetailList.size());
+    }
+
+    @Test
+    public void givenContactRetrieveNumberOfContactByCity() throws ContactDetailException {
+        AddressBookService addressBookService = new AddressBookService();
+        Assertions.assertEquals(2, addressBookService.readAddressBookData("count", "pune"));
+    }
+
+    @Test
+    public void givenNewContactShouldAddToAddressBook() throws ContactDetailException {
+        AddressBookService addressBookService = new AddressBookService();
+        addressBookService.readAddressBookData(AddressBookService.IOService.DB_IO);
+        addressBookService.addNewContact("akshay", "khiari", "kondhwa", "pune", "maharashtra", "147852", "2587413690", "akshay@gmail.com", "2020-06-06");
+        boolean result = addressBookService.checkUpdatedRecordSyncWithDatabase("akshay");
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void givenMultipleContactWhenAddedShouldSyncWithDB() throws ContactDetailException {
+        AddressBookService addressBookService = new AddressBookService();
+        List<ContactDetail> contactDetailList = addressBookService.readAddressBookData(AddressBookService.IOService.DB_IO);
+        ContactDetail[] contactArray = {
+                new ContactDetail("prasad", "abnave", "hadapsar", "pune", "maharashtra", "369852", "7532418960",
+                        "prasad@gmail.com", "2020-07-07"),
+                new ContactDetail("shubham", "chand", "hadapsar", "pune", "maharashtra", "369852", "7532418960",
+                        "shubham@gmail.com", "2020-08-08") };
+        addressBookService.addMultipleContactsToDB(Arrays.asList(contactArray));
+        boolean result1 = addressBookService.checkUpdatedRecordSyncWithDatabase("prasad");
+        boolean result2 = addressBookService.checkUpdatedRecordSyncWithDatabase("shubham");
+        Assertions.assertTrue(result1);
+        Assertions.assertTrue(result2);
     }
 }

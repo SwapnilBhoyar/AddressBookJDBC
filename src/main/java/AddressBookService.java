@@ -1,8 +1,5 @@
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AddressBookService {
 
@@ -10,60 +7,63 @@ public class AddressBookService {
         DB_IO
     }
 
-    private List<ContactDetail> contactList = new ArrayList<>();
-    private Map<String, Integer> contactByCityList;
-    private AddressBookDBService addressBookDBService;
+    private List<ContactDetail> addressBookList;
+    private static AddressBookDBService addressBookDBService;
 
-    AddressBookService () {
+    public AddressBookService() {
         addressBookDBService = AddressBookDBService.getInstance();
     }
 
-    public List<ContactDetail> readContactDetail() throws DatabaseException {
-        List<ContactDetail> contactList = new ArrayList<>();
-        AddressBookDBService addressBookDBService = new AddressBookDBService();
-        contactList = addressBookDBService.readData();
-        return contactList;
+    public List<ContactDetail> readAddressBookData(IOService ioservice) throws ContactDetailException {
+        if (ioservice.equals(IOService.DB_IO))
+            return this.addressBookList = addressBookDBService.readData();
+        return this.addressBookList;
     }
 
-    public List<ContactDetail> readContactDBData() throws DatabaseException {
-        this.contactList = addressBookDBService.readData();
-        return contactList;
-    }
-
-    public void updateContactData(String firstname, String lastname, String phone) throws SQLException, DatabaseException {
-        int result = addressBookDBService.updateContactData(firstname, lastname, phone);
-        if (result == 0) {
+    public void updateRecord(String firstname, String address) throws ContactDetailException {
+        int result = addressBookDBService.updateAddressBookData(firstname, address);
+        if (result == 0)
             return;
+        ContactDetail contactDetail = this.getAddressBookData(firstname);
+        if (contactDetail != null)
+            contactDetail.address = address;
+    }
+
+    public boolean checkUpdatedRecordSyncWithDatabase(String firstname) throws ContactDetailException {
+        List<ContactDetail> addressBookData = addressBookDBService.getAddressBookData(firstname);
+        return addressBookData.get(0).equals(getAddressBookData(firstname));
+    }
+
+    private ContactDetail getAddressBookData(String firstname) {
+        return this.addressBookList.stream().filter(addressBookItem -> addressBookItem.firstName.equals(firstname))
+                .findFirst().orElse(null);
+    }
+
+    public List<ContactDetail> readAddressBookData(IOService ioService, String start, String end)
+            throws ContactDetailException {
+        try {
+            LocalDate startLocalDate = LocalDate.parse(start);
+            LocalDate endLocalDate = LocalDate.parse(end);
+            if (ioService.equals(IOService.DB_IO))
+                return addressBookDBService.readData(startLocalDate, endLocalDate);
+            return this.addressBookList;
+        } catch (ContactDetailException e) {
+            throw new ContactDetailException(e.getMessage(), ContactDetailException.ExceptionType.DB_EXCEPTION);
         }
-        ContactDetail contact = this.getContact(firstname, lastname);
-        if (contact != null)
-            contact.phoneNumber = phone;
     }
 
-    private ContactDetail getContact(String firstname, String lastname) {
-        ContactDetail contact = this.contactList.stream()
-                .filter(contactDetail -> contactDetail.firstname.equals(firstname) && contactDetail.lastname.equals(lastname))
-                .findFirst()
-                .orElse(null);
-        return contact;
+    public int readAddressBookData(String function, String city) throws ContactDetailException {
+        return addressBookDBService.readDataBasedOnCity(function, city);
     }
 
-    public boolean checkContactDataSync(String firstname, String lastname) throws DatabaseException {
-        List<ContactDetail> contactList = addressBookDBService.getContactData(firstname, lastname);
-        return contactList.get(0).equals(getContact(firstname, lastname));
+    public void addNewContact(String firstName, String lastName, String address, String city, String state, String zip,
+                              String phoneNo, String email, String date) throws ContactDetailException {
+        addressBookList.add(addressBookDBService.addNewContact(firstName, lastName, address, city, state, zip, phoneNo,
+                email, date));
     }
 
-    public List<ContactDetail> readContactDataForGivenDateRange(LocalDate startDate, LocalDate endDate) {
-        List<ContactDetail> contactListData = addressBookDBService.getContactForGivenDateRange(startDate, endDate);
-        return contactListData;
-    }
-
-    public Map<String, Integer> readContactByCity() throws DatabaseException {
-        Map<String, Integer> contactByCityListList = addressBookDBService.getContactByCity();
-        return contactByCityListList;
-    }
-
-    public void addContact(String firstname, String lastname, String address, String city, String state, int zip, String phonenumber, String email, LocalDate date) throws DatabaseException {
-        contactList.add(addressBookDBService.addContact(firstname, lastname, address, city, state, zip, phonenumber, email, date));
+    public void addMultipleContactsToDB(List<ContactDetail> record) {
+        AddressBookDBService addressBookDBService = new AddressBookDBService();
+        addressBookDBService.addMultipleContactsToDB(record);
     }
 }
