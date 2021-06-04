@@ -1,15 +1,26 @@
 {
   "contacts": [
     {
-      "FirstName": "swapnil",
-      "LastName": "bhoyar",
-      "Address": "camp",
-      "City": "pune",
-      "State": "maharashtra",
-      "Zip": "123654",
-      "PhoneNo": "7894561230",
-      "Email": "swapnil@gmail.com",
-      "Date": "2020-01-01"
+      "id": 1,
+      "firstname": "swapnil",
+      "lastname": "bhoyar",
+      "address": " camp",
+      "city": "pune",
+      "state": "maharashtra",
+      "zip": 123546,
+      "phonenumber": "1230456987",
+      "email": "swapnil@gmail.com"
+    },
+    {
+      "id": 2,
+      "firstName": "himanshu",
+      "lastName": "rane",
+      "address": "hadpsar",
+      "city": "pune",
+      "state": "maharashtra",
+      "zip": 785412,
+      "phoneNumber": "1478523690",
+      "emailId": "himanshu@gmail.com"
     }
   ]
 }
