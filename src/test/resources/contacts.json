@@ -1,0 +1,15 @@
+{
+  "contacts": [
+    {
+      "FirstName": "swapnil",
+      "LastName": "bhoyar",
+      "Address": "camp",
+      "City": "pune",
+      "State": "maharashtra",
+      "Zip": "123654",
+      "PhoneNo": "7894561230",
+      "Email": "swapnil@gmail.com",
+      "Date": "2020-01-01"
+    }
+  ]
+}
