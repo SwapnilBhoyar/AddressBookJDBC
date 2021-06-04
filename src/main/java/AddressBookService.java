@@ -14,7 +14,7 @@ public class AddressBookService {
         addressBookDBService = AddressBookDBService.getInstance();
     }
 
-    public List<ContactDetail> readAddressBookData(IOService ioservice) throws ContactDetailException {
+    public List<ContactDetail> readAddressBook(IOService ioservice) throws ContactDetailException {
         if (ioservice.equals(IOService.DB_IO))
             return this.addressBookList = addressBookDBService.readData();
         return this.addressBookList;
@@ -39,7 +39,7 @@ public class AddressBookService {
                 .findFirst().orElse(null);
     }
 
-    public List<ContactDetail> readAddressBookData(IOService ioService, String start, String end)
+    public List<ContactDetail> readAddressBook(IOService ioService, String start, String end)
             throws ContactDetailException {
         try {
             LocalDate startLocalDate = LocalDate.parse(start);
@@ -52,7 +52,7 @@ public class AddressBookService {
         }
     }
 
-    public int readAddressBookData(String function, String city) throws ContactDetailException {
+    public int readAddressBook(String function, String city) throws ContactDetailException {
         return addressBookDBService.readDataBasedOnCity(function, city);
     }
 
@@ -62,7 +62,7 @@ public class AddressBookService {
                 email, date));
     }
 
-    public void addMultipleContactsToDB(List<ContactDetail> record) {
+    public void addMultipleContacts(List<ContactDetail> record) {
         AddressBookDBService addressBookDBService = new AddressBookDBService();
         addressBookDBService.addMultipleContactsToDB(record);
     }
