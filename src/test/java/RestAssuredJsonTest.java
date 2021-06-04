@@ -51,4 +51,24 @@ public class RestAssuredJsonTest {
         long entries = contactRestAPI.countEntries();
         Assertions.assertEquals(2, entries);
     }
+
+    @Test
+    void givenUpdateQuery_WhenUpdated_ShouldReturn200ResponseCode() {
+        ContactRestAPI contactRestAPI;
+        ContactData[] dataArray = getContactDetails();
+        contactRestAPI = new ContactRestAPI(Arrays.asList(dataArray));
+
+        contactRestAPI.updateContact("swapnil", "4563217890");
+        ContactData contactData = contactRestAPI.getContact("swapnil");
+
+        RequestSpecification requestSpecification = RestAssured.given();
+        requestSpecification.header("Content-Type", "application/json");
+        String contactJSON = new Gson().toJson(contactData);
+        requestSpecification.body(contactJSON);
+        Response response = requestSpecification.put(RestAssured.baseURI + "/contacts/" + contactData.id);
+
+        System.out.println("After Updating we have: \n" + response.asString());
+        int statusCode = response.statusCode();
+        Assertions.assertEquals(200, statusCode);
+    }
 }
